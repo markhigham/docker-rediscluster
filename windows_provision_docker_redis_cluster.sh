@@ -1,12 +1,14 @@
 #!/bin/bash
 
 DOCKER_IP=$(netsh interface ip show addresses "vEthernet (DockerNAT)" | grep 'IP Address' | cut -d: -f2 | awk '{ print $1 }')
+REDIS_0_PORT=6379
+REDIS_1_PORT=6389
 
 echo "DOCKER IP : $DOCKER_IP"
 
 # create two redis instances
-docker run --name redis_0 -t -d -i redis:2.8 
-docker run --name redis_1 -t -d -i redis:2.8 
+docker run --name redis_0 -p $REDIS_0_PORT:6379 -t -d -i redis:2.8 
+docker run --name redis_1 -p $REDIS_1_PORT:6379 -t -d -i redis:2.8 
 
 #get master ip
 REDIS_0_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' redis_0)
@@ -25,11 +27,9 @@ SENTINEL_0_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' senti
 SENTINEL_1_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' sentinel_1)
 SENTINEL_2_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' sentinel_2)
 
-echo "SENTINEL_0_IP : $SENTINEL_0_IP"
-echo "SENTINEL_1_IP : $SENTINEL_1_IP"
-echo "SENTINEL_2_IP : $SENTINEL_2_IP"
 
-redis-cli -h $REDIS_1_IP -p 6379 slaveof $REDIS_0_IP 6379
+docker exec -t redis_1 redis-cli slaveof $REDIS_0_IP 6379
+#redis-cli -h $REDIS_1_IP -p 6379 slaveof $REDIS_0_IP 6379
 
 redis-cli -p 26379 sentinel monitor testing $REDIS_0_IP 6379 2
 redis-cli -p 26379 sentinel set testing down-after-milliseconds 1000
@@ -45,3 +45,12 @@ redis-cli -p 26377 sentinel monitor testing $REDIS_0_IP 6379 2
 redis-cli -p 26377 sentinel set testing down-after-milliseconds 1000
 redis-cli -p 26377 sentinel set testing failover-timeout 1000
 redis-cli -p 26377 sentinel set testing parallel-syncs 1
+
+echo "SENTINEL_0 : $SENTINEL_0_IP 26379"
+echo "SENTINEL_1_IP : $SENTINEL_1_IP"
+echo "SENTINEL_2_IP : $SENTINEL_2_IP"
+
+
+echo "Master REDIS $REDIS_0_IP:$REDIS_0_PORT"
+echo "Slave  REDIS $REDIS_1_IP:$REDIS_1_PORT"
+
