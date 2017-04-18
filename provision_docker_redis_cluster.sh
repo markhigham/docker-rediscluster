@@ -5,8 +5,8 @@ DOCKER_IP=$(ifconfig docker0 | grep 'inet addr:' | cut -d: -f2  | awk '{ print $
 echo "DOCKER IP : $DOCKER_IP"
 
 # create two redis instances
-sudo docker run -v ./redis_0.conf:/usr/local/etc/redis/redis.conf --name redis_0 -t -d -i -p 6379:6379 redis /usr/local/etc/redis/redis.conf
-sudo docker run -v ./redis_1.conf:/usr/local/etc/redis/redis.conf --name redis_1 -t -d -i -p 6389:6379 redis /usr/local/etc/redis/redis.conf
+sudo docker run -v redis_0.conf:/usr/local/etc/redis/redis.conf --name redis_0 -t -d -i -p 6379:6379 redis /usr/local/etc/redis/redis.conf
+sudo docker run -v redis_1.conf:/usr/local/etc/redis/redis.conf --name redis_1 -t -d -i -p 6389:6379 redis /usr/local/etc/redis/redis.conf
 
 
 #get master ip
