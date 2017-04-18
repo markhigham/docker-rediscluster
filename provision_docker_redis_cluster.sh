@@ -8,7 +8,6 @@ echo "DOCKER IP : $DOCKER_IP"
 sudo docker run -v redis_0.conf:/usr/local/etc/redis/redis.conf --name redis_0 -t -d -i -p 6379:6379 redis /usr/local/etc/redis/redis.conf
 sudo docker run -v redis_1.conf:/usr/local/etc/redis/redis.conf --name redis_1 -t -d -i -p 6389:6379 redis /usr/local/etc/redis/redis.conf
 
-
 #get master ip
 REDIS_0_IP=$(sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' redis_0)
 REDIS_1_IP=$(sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' redis_1)
