@@ -5,8 +5,9 @@ DOCKER_IP=$(ifconfig docker0 | grep 'inet addr:' | cut -d: -f2  | awk '{ print $
 echo "DOCKER IP : $DOCKER_IP"
 
 # create two redis instances
-sudo docker run --name redis_0 -t -d -i redis:2.8 
-sudo docker run --name redis_1 -t -d -i redis:2.8 
+sudo docker run -v ./redis_0.conf:/usr/local/etc/redis/redis.conf --name redis_0 -t -d -i -p 6379:6379 redis /usr/local/etc/redis/redis.conf
+sudo docker run -v ./redis_1.conf:/usr/local/etc/redis/redis.conf --name redis_1 -t -d -i -p 6389:6379 redis /usr/local/etc/redis/redis.conf
+
 
 #get master ip
 REDIS_0_IP=$(sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' redis_0)
@@ -16,13 +17,12 @@ echo "REDIS_0_IP : $REDIS_0_IP"
 echo "REDIS_1_IP : $REDIS_1_IP"
 
 # start up the sentinels
-# docker run --name sentinel_0 -d -p 26379:26379 joshula/redis-sentinel --sentinel announce-ip $DOCKER_IP --sentinel announce-port 26379
 sudo docker run --name sentinel_0 -d -p 26379:26379 joshula/redis-sentinel --sentinel announce-ip $DOCKER_IP --sentinel announce-port 26379
 sudo docker run --name sentinel_1 -d -p 26378:26379 joshula/redis-sentinel --sentinel announce-ip $DOCKER_IP --sentinel announce-port 26378
 sudo docker run --name sentinel_2 -d -p 26377:26379 joshula/redis-sentinel --sentinel announce-ip $DOCKER_IP --sentinel announce-port 26377
 
 #get sentinel ips
-SENTINEL_0_IP=$(sudo docipker inspect --format '{{ .NetworkSettings.IPAddress }}' sentinel_0)
+SENTINEL_0_IP=$(sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' sentinel_0)
 SENTINEL_1_IP=$(sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' sentinel_1)
 SENTINEL_2_IP=$(sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' sentinel_2)
 
