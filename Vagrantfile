@@ -25,8 +25,8 @@ Vagrant.configure("2") do |config|
   #   vb.memory = "1024"
   # end
   #
-  config.vm.provision "docker" ,
-    images: ["redis", "joshula/redis-sentinel"]
+  # config.vm.provision "docker" ,
+  #   images: ["redis", "joshula/redis-sentinel"]
 
   # config.vm.provision :shell, :path => "bootstrap.sh"
   # Enable provisioning with a shell script. Additional provisioners such as
