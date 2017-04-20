@@ -31,7 +31,7 @@ redis-cli -h $REDIS_1_IP -p 6379 slaveof $REDIS_0_IP 6379
 redis-cli -h $REDIS_2_IP -p 6379 slaveof $REDIS_0_IP 6379
 
 
-redis-cli -h $DOCKER_IP -p 26379 sentinel monitor testing $REDIS_0_IP 6379 2
+redis-cli -h $DOCKER_IP -p 26379 sentinel monitor testing $DOCKER_IP 6379 2
 redis-cli -h $DOCKER_IP -p 26379 sentinel set testing down-after-milliseconds 1000
 redis-cli -h $DOCKER_IP -p 26379 sentinel set testing failover-timeout 1000
 redis-cli -h $DOCKER_IP -p 26379 sentinel set testing parallel-syncs 1
