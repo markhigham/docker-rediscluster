@@ -1,6 +1,7 @@
 #!/bin/bash
 
-DOCKER_IP=$(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2  | awk '{ print $1}')
+# hardcoded eth1 interface - this may not work for you
+DOCKER_IP=$(ifconfig eth1 | grep 'inet addr:' | cut -d: -f2  | awk '{ print $1}')
 
 echo "DOCKER IP : $DOCKER_IP"
 
