@@ -1,3 +1,14 @@
+Behind the proxy stuff
+- Set HTTP_PROXY and HTTPS_PROXY before `vagrant up`
+
+from inside the vagrant box
+
+`sudo visudo`
+
+Defaults        env_keep="http_proxy https_proxy noproxy"
+
+edit .bashrc or .profile to export http_proxy and https_proxy
+
 docker-rediscluster
 ===================
 
@@ -50,7 +61,7 @@ Play with it
 Attach to a sentinel
 
 ```
-sudo docker attach sentinel_1
+sudo docker attach sentinel_1ewxexi
 ```
 
 Pause/Unpause redis instances
